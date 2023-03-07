@@ -2,6 +2,7 @@ from datetime import timezone
 from uuid import UUID
 
 import pydantic
+from pydantic.datetime_parse import parse_datetime
 from aiohttp import web
 from aiohttp.web_request import Request
 from api import crud, schemas
@@ -30,14 +31,25 @@ async def get_user(request: Request):
             content_type='application/json'
         )
     date = request.rel_url.query.get('date', None)
-    if date:
-        raise NotImplementedError
     try:
-        id, name, balance, dt = await crud.get_user_balance_current(user_id)
+        if date:
+            dt = parse_datetime(date)
+            # By defaults pydantic converts time to local timezone if there were
+            # no info about TZ, but we asserts it in UTC
+            dt = dt.replace(tzinfo=None)
+            id, name, balance, dt = await crud.get_history_user_balance(user_id, dt)
+        else:
+            id, name, balance, dt = await crud.get_user_balance_current(user_id)
     except crud.NotFoundError:
         return web.Response(
             body='{"message": "User not found"}',
             status=404,
+            content_type='application/json'
+        )
+    except crud.NoBalanceInfo:
+        return web.Response(
+            body='{"message": "No balance info for this datetime"}',
+            status=400,
             content_type='application/json'
         )
     return web.json_response({

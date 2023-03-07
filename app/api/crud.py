@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 import models
 from api import schemas
 from database import AsyncSessionLocal
-from sqlalchemy import insert, select, update
+from sqlalchemy import insert, select, update, func, desc
 from sqlalchemy.exc import IntegrityError
 
 
@@ -12,6 +12,10 @@ class NotFoundError(Exception):
 
 
 class TransactionAlreadyExistsError(Exception):
+    pass
+
+
+class NoBalanceInfo(Exception):
     pass
 
 
@@ -79,3 +83,23 @@ async def get_transaction(uuid: str):
     if not result:
         raise NotFoundError
     return result
+
+
+async def get_history_user_balance(id: str, dt: datetime):
+    async with AsyncSessionLocal() as db_session:
+        q = select(models.User)\
+            .where(models.User.id == id)
+        result = (await db_session.execute(q)).scalars().first()
+        if not result:
+            raise NotFoundError
+
+        q = select(models.Transaction.post_transaction_balance)\
+            .where(models.Transaction.user_id == id)\
+            .where(models.Transaction.datetime < dt)\
+            .order_by(desc(models.Transaction.datetime))
+
+        balance = (await db_session.execute(q)).scalars().first()
+        if balance is None:
+            raise NoBalanceInfo
+        balance_str = f'{balance/100:.2f}'
+    return result.id, result.name, balance_str, dt
