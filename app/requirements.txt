@@ -1,0 +1,11 @@
+aiohttp==3.8.3
+gino==0.8.6
+# psycopg2==2.8.5
+sqlalchemy[postgresql_asyncpg]==1.4.46
+psycopg2-binary==2.9.5
+uvloop==0.17.0
+environs==9.3.1
+requests
+pytest
+yoyo-migrations==7.3.2
+pydantic==1.10.5

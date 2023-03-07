@@ -1,13 +1,7 @@
 import uvloop
 from aiohttp import web
 
-from app.app import init_app
-
-
-def create_app() -> web.Application:
-    app = init_app()
-
-    return app
+from app import init_app
 
 
 def main() -> None:

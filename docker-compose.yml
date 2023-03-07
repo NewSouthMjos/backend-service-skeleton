@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+    payment_service:
+        build: ./app
+        container_name: payment_service
+        environment:
+            - TZ=Europe/Samara
+            - DATABASE_HOST=payment_db
+            - DATABASE_PORT=5432
+            - DATABASE_NAME=postgres
+            - DATABASE_USER=postgres
+            - DATABASE_PASSWORD=postgres
+            - HOST=0.0.0.0
+            - PORT=8000
+            - DEGUB=0
+        ports: 
+            - 8000:8000
+        networks:
+            - payment-nt
+        depends_on:
+            payment_db:
+                condition: service_healthy
+
+    payment_db:
+        image: postgres:15.2
+        container_name: payment_db
+        environment:
+            - TZ=Europe/Samara
+            - POSTGRES_DB=postgres
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+        ports:
+            - 5432:5432
+        volumes:
+            - payment-volume:/var/lib/postgresql/data
+        networks:
+            - payment-nt
+        healthcheck:
+            test: ["CMD-SHELL", "psql -U postgres -c 'select 1'"]
+            interval: 5s
+            timeout: 5s
+            retries: 5
+        command: ["postgres", "-c", "log_statement=all"]
+
+networks:
+  payment-nt:
+
+volumes: 
+    payment-volume:

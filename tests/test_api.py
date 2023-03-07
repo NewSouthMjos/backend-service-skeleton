@@ -27,6 +27,7 @@ def test_api():
 
     txn = {
         'uid': str(uuid.uuid4()),
+        'user_id': user['id'],  # We need to specify user
         'type': 'DEPOSIT',
         'amount': '100.0',
         'timestamp': datetime(2023, 1, 4).isoformat(),  # technical field to make tests possible
@@ -41,6 +42,7 @@ def test_api():
 
     txn = {
         'uid': str(uuid.uuid4()),
+        'user_id': user['id'],  # We need to specify user
         'type': 'WITHDRAW',
         'amount': '50.0',
         'timestamp': datetime(2023, 1, 5).isoformat(),  # technical field to make tests possible
@@ -53,6 +55,7 @@ def test_api():
 
     txn = {
         'uid': str(uuid.uuid4()),
+        'user_id': user['id'],  # We need to specify user
         'type': 'WITHDRAW',
         'amount': '60.0',
         'timestamp': datetime.utcnow().isoformat(),  # technical field to make tests possible
@@ -63,6 +66,7 @@ def test_api():
 
     txn = {
         'uid': str(uuid.uuid4()),
+        'user_id': user['id'],  # We need to specify user
         'type': 'WITHDRAW',
         'amount': '10.0',
         'timestamp': datetime(2023, 2, 5).isoformat(),  # technical field to make tests possible
