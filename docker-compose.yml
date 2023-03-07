@@ -22,6 +22,18 @@ services:
             payment_db:
                 condition: service_healthy
 
+    payment_service_test:
+        build: ./tests
+        container_name: payment_service_test
+        environment:
+            - HOST=payment_service
+            - PORT=8000
+        networks:
+            - payment-nt
+        depends_on:
+            payment_service:
+                condition: service_started
+
     payment_db:
         image: postgres:15.2
         container_name: payment_db
