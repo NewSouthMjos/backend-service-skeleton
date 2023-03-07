@@ -13,5 +13,5 @@ class Config:
     DATABASE_HOST = str(getenv('DATABASE_HOST'))
     DATABASE_URI = (
         f'postgresql+asyncpg://{DATABASE_USER}:{DATABASE_PASSWORD}@'\
-        F'{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'
+        f'{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}'
     )
