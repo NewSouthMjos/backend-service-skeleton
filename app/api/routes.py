@@ -18,7 +18,9 @@ async def create_user(request: Request):
     return web.json_response({
         'id': id,
         'name': name,
-    })
+        },
+        status=201
+    )
 
 
 async def get_user(request: Request):
@@ -82,6 +84,8 @@ async def add_transaction(request: Request):
             status=400,
             content_type='application/json'
         )
+    except crud.NotEnoughMoneyError:
+        return web.Response(status=402)
     return web.Response(status=200)
 
 

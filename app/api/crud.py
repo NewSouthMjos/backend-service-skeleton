@@ -19,6 +19,10 @@ class NoBalanceInfo(Exception):
     pass
 
 
+class NotEnoughMoneyError(Exception):
+    pass
+
+
 async def create_user(user_schema: schemas.UserIn):
     async with AsyncSessionLocal() as db_session:
         q = insert(models.User)\
@@ -54,6 +58,9 @@ async def add_transaction(transaction_schema: schemas.TransactionIn):
             new_user_balance = current_user_balance + int(transaction_schema.amount*100)
         else:  # type == 2
             new_user_balance = current_user_balance - int(transaction_schema.amount*100)
+        print(new_user_balance)
+        if new_user_balance < 0:
+            raise NotEnoughMoneyError
         q = insert(models.Transaction)\
             .values(
                 uuid=str(transaction_schema.uid),
