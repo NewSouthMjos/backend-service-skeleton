@@ -58,7 +58,6 @@ async def add_transaction(transaction_schema: schemas.TransactionIn):
             new_user_balance = current_user_balance + int(transaction_schema.amount*100)
         else:  # type == 2
             new_user_balance = current_user_balance - int(transaction_schema.amount*100)
-        print(new_user_balance)
         if new_user_balance < 0:
             raise NotEnoughMoneyError
         q = insert(models.Transaction)\

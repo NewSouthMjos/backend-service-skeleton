@@ -53,7 +53,6 @@ services:
             interval: 5s
             timeout: 5s
             retries: 5
-        command: ["postgres", "-c", "log_statement=all"]
 
 networks:
   payment-nt:

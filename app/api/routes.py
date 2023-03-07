@@ -68,7 +68,6 @@ async def add_transaction(request: Request):
         transaction_schema = schemas.TransactionIn(**body_json)
     except pydantic.ValidationError as e:
         return web.Response(body=e.json(), status=400, content_type='application/json')
-    print(transaction_schema)
 
     try:
         await crud.add_transaction(transaction_schema)
